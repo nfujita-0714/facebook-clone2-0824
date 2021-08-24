@@ -14,9 +14,9 @@ class PicturesController < ApplicationController
   def new
     @picture = Picture.new
     if params[:back]
-      @feed = Feed.new(feed_params)
+      @picture = Picture.new(picture_params)
     else
-      @feed = Feed.new
+      @picture = Picture.new
     end
   end
 
@@ -25,42 +25,61 @@ class PicturesController < ApplicationController
   end
 
   # POST /pictures or /pictures.json
+  # def create
+  #   # @picture = Picture.new(picture_params)
+  #   # @picture.user_id = current_user.id
+  #   # respond_to do |format|
+  #   @picture = current_user.pictures.build(picture_params)
+  #     if @picture.save
+  #       format.html { redirect_to @picture, notice: "Picture was successfully created." }
+  #       format.json { render :show, status: :created, location: @picture }
+  #     else
+  #       format.html { render :new, status: :unprocessable_entity }
+  #       format.json { render json: @picture.errors, status: :unprocessable_entity }
+  #     end
+  #   end
+  # end
+
   def create
-    # @picture = Picture.new(picture_params)
-    # @picture.user_id = current_user.id
     @picture = current_user.pictures.build(picture_params)
-    respond_to do |format|
+    if params[:back]
+      render :new
+    else
       if @picture.save
-        format.html { redirect_to @picture, notice: "Picture was successfully created." }
-        format.json { render :show, status: :created, location: @picture }
+        redirect_to new_picture_path
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @picture.errors, status: :unprocessable_entity }
+        render :new
       end
     end
   end
 
   # PATCH/PUT /pictures/1 or /pictures/1.json
   def update
-    respond_to do |format|
-      if @picture.update(picture_params)
-        format.html { redirect_to @picture, notice: "Picture was successfully updated." }
-        format.json { render :show, status: :ok, location: @picture }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @picture.errors, status: :unprocessable_entity }
-      end
+    if @picture.update(picture_params)
+      redirect_to pictures_path, notice: "ブログを編集しました！"
+    else
+      render :edit
     end
   end
+      # respond_to do |format|
+      # if @picture.update(picture_params)
+      #   format.html { redirect_to @picture, notice: "Picture was successfully updated." }
+      #   format.json { render :show, status: :ok, location: @picture }
+      # else
+      #   format.html { render :edit, status: :unprocessable_entity }
+      #   format.json { render json: @picture.errors, status: :unprocessable_entity }
 
   # DELETE /pictures/1 or /pictures/1.json
   def destroy
     @picture.destroy
-    respond_to do |format|
-      format.html { redirect_to pictures_url, notice: "Picture was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    redirect_to pictures_path, notice:"ブログを削除しました！"
   end
+  #   @picture.destroy
+  #   respond_to do |format|
+  #     format.html { redirect_to pictures_url, notice: "Picture was successfully destroyed." }
+  #     format.json { head :no_content }
+  #   end
+  # end
 
   def confirm
     # @picture = Picture.new(picture_params)
@@ -70,13 +89,13 @@ class PicturesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_picture
-      @picture = Picture.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_picture
+    @picture = Picture.find(params[:id])
+  end
 
     # Only allow a list of trusted parameters through.
-    def picture_params
-      params.require(:picture).permit(:title, :content, :user_id)
-    end
+  def picture_params
+    params.require(:picture).permit(:title, :content, :user_id, :image, :image_cache)
+  end
 end
