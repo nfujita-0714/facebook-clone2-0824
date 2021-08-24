@@ -15,5 +15,11 @@
   <%= @picture.user %>
 </p>
 
+# 8/24追加
+<p>
+  <strong>Image:</strong>
+  <%= image_tag @feed.image.url %>
+</p>
+
 <%= link_to 'Edit', edit_picture_path(@picture) %> |
 <%= link_to 'Back', pictures_path %>
