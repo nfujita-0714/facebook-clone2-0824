@@ -4,7 +4,8 @@ Rails.application.routes.draw do
     post :confirm
     end
   end
+  root "users#new"
   resources :sessions, only: [:new, :create, :destroy]
-  resources :users
+  #resources :users
   resources :users, only: [:new, :create, :show]
 end
